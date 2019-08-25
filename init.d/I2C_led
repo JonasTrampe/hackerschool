@@ -5,9 +5,14 @@
 
 USE_PROCD=1
 
-START=11
+START=15
 
 PROG=/opt/hucon/i2c_led.sh
+
+APP=hucon_i2c_test
+
+SERVICE_WRITE_PID=0
+SERVICE_DAEMONIZE=0
 
 start_service() {
 	if [ ! -z ${IPKG_INSTROOT+x} ];
@@ -16,6 +21,17 @@ start_service() {
 		procd_open_instance 
 		procd_set_param command "$PROG"
 		procd_append_param command "on"
+		procd_close_instance
+	fi
+}
+
+stop_service() {
+	if [ ! -z ${IPKG_INSTROOT+x} ];
+		then echo "In build environment - doing nothing."; 
+	else
+		procd_open_instance 
+		procd_set_param command "$PROG"
+		procd_append_param command "off"
 		procd_close_instance
 	fi
 }
